@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="output.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+    <title>CyberTasks | Home</title>
+</head>
+
+<body class="bg-cyber-bg font-cyber">
+    <!-- App Container -->
+    <div class="max-w-3xl mx-auto p-5">
+
+        <!-- Brand Header & Search Bar -->
+        <header class=" bg-cyber-bg z-50">
+            <div class="flex justify-between items-center">
+                <h1 id="brandHeader" class="text-neon-pink text-2xl transition-all">CyberTasks</h1>
+                <div class="relative">
+                    <input id="searchInput" placeholder="Search..."
+                        class="input shadow-lg focus:border-2 border-neon-blue px-5 py-3 rounded-xl w-0 transition-all text-neon-blue focus:w-64 outline-none"
+                        name="search" type="search" />
+                    <svg id="searchIcon" class="size-8 absolute top-3 right-3 text-neon-blue cursor-pointer"
+                        stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none">
+                        <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                            stroke-linejoin="round" stroke-linecap="round"></path>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main App Section -->
+        <section class="flex flex-col gap-4 mt-13">
+
+            <!-- Deploy Task Button -->
+            <div id="deploytaskButton" class="hover:shadow-[0_0_15px_#0ff] transition-all cursor-pointer p-5 w-full rounded-2xl mx-auto bg-cyber-accent/80 border border-neon-blue/30"">
+
+                <div class="flex items-center justify-center gap-7">
+                    <svg class=" stroke-neon-blue fill-none group-hover:fill-teal-800 group-active:stroke-teal-200
+                    group-active:fill-teal-600 group-active:duration-0 duration-300" viewBox="0 0 24 24" height="32px"
+                    width="32px" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-width="1.5"
+                        d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z">
+                    </path>
+                    <path stroke-width="1.5" d="M8 12H16"></path>
+                    <path stroke-width="1.5" d="M12 16V8"></path>
+                    </svg>
+                    <p class="text-neon-blue text-2xl">Deploy Task</p>
+                </div>
+
+            </div>
+
+            <!-- Add Task Form [Opens when you click Deploy Task] -->
+            <div id="taskFormContainer" class="max-h-0 overflow-hidden opacity-0 transition-all duration-1000 ease">
+                <form id="taskForm" class="mt-4 p-4 flex flex-col gap-3 bg-cyber-accent/80 border border-neon-blue/30 rounded-xl">
+                    <input id="taskInput" type="text" placeholder="Task" name="taskName" class="w-full py-3 px-3 rounded bg-black/50 text-white focus:border-neon-pink">
+                    <button type="submit" class="mt-3 px-4 py-2 bg-neon-blue text-black rounded cursor-pointer hover:bg-neon-blue/80">Add</button>
+                </form>
+            </div> 
+
+            <!-- Task Matrix -->
+            <div class="flex flex-col items-center mb-5">
+
+                <div class="mb-5">
+                    <h2 class="text-3xl text-neon-blue mt-5">Incoming Objectives</h2>
+                </div>
+
+                <!-- Task Container (Tasks will be dynamically added from database) -->
+                <div id="taskContainer" class="w-full flex flex-col gap-3">
+
+                </div>
+
+
+            </div>
+            
+
+        </section>
+
+        <!-- Footer & Attributions -->
+        <footer class=" w-full text-sm mt-10">
+            <div class="text-neon-blue/30"> Icons made by <a href="https://www.freepik.com" title="Freepik"> Freepik </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        </footer>
+
+    </div>
+    <script src="app.js"></script>
+</body>
+
+
+</html>

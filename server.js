@@ -1,9 +1,9 @@
 // Import required modules
-const { runMongoDB } = require('./db/mongodb.js');
-
+require("module-alias/register");
 require('dotenv').config();
 const express = require("express");
 const path = require('path');
+const { taskRoutes } = require("@routes");
 
 
 // Create express app
@@ -18,12 +18,13 @@ const PORT = process.env.PORT || 3000;
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to the express server and MongoDB
-const connectToExpressAndMongoDB = async () => {
-    await runMongoDB();
+// use taskRoutes for all /tasks calls
+app.use("/tasks", taskRoutes);
 
-    await app.listen(PORT, () => {
-        console.log(`Server running at http://localhost:${PORT}`);
-    });
-}
-connectToExpressAndMongoDB();
+
+// Start Server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
+
+

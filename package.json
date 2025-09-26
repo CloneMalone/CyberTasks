@@ -13,7 +13,8 @@
     "@models": "models",
     "@db": "db",
     "@controllers": "controllers",
-    "@routes": "routes"
+    "@routes": "routes",
+    "@config": "config"
   },
   "type": "commonjs",
   "keywords": [],

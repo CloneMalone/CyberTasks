@@ -41,8 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
 
         generateTaskElement(addTaskInput.value);
-        await fetchTasks("/tasks");
-
+        await addTask("/tasks", addTaskInput.value);
     });
 
 
@@ -138,3 +137,27 @@ function generateTaskElement(taskNameInput) {
 async function fetchTasks(apiUrl) {
     await fetch(apiUrl);
 }
+
+// Add task to database
+async function addTask(apiUrl, taskInput) {
+
+    const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ taskName: taskInput })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+        console.dir(`Success: ${data.message}`);
+        console.dir(`Status: ${data.status}`);
+        console.dir(`Task Added: ${JSON.stringify(data.inserted, null, 2)}`);
+    } else {
+        console.error(data.errorMessage);
+    }
+
+
+
+}
+

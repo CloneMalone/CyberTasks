@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="output.css">
+    <link rel="stylesheet" href="animation.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
     <title>CyberTasks | Home</title>
 </head>
@@ -54,7 +55,7 @@
             <!-- Add Task Form [Opens when you click Deploy Task] -->
             <div id="taskFormContainer" class="max-h-0 overflow-hidden opacity-0 transition-all duration-1000 ease">
                 <form id="taskForm" class="mt-4 p-4 flex flex-col gap-3 bg-cyber-accent/80 border border-neon-blue/30 rounded-xl">
-                    <input id="taskInput" type="text" placeholder="Task" name="taskName" class="w-full py-3 px-3 rounded bg-black/50 text-white focus:border-neon-pink">
+                    <input id="taskInput" type="text" placeholder="Task" name="taskName" class="w-full py-3 px-3 rounded bg-black/50 text-white focus:border-neon-pink" required>
                     <button type="submit" class="mt-3 px-4 py-2 bg-neon-blue text-black rounded cursor-pointer hover:bg-neon-blue/80">Add</button>
                 </form>
             </div> 

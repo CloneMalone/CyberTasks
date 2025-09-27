@@ -1,8 +1,21 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     // Grab DOM elements
     const searchInput = document.getElementById("searchInput");
     const searchIcon = document.getElementById("searchIcon");
     const brandHeader = document.getElementById("brandHeader");
+    const tasksContainer = document.getElementById("tasksContainer");
+
+    // Clear tasks container
+    clearTasksContainer(tasksContainer);
+
+    // Retrieve all tasks, insert in tasks container
+    const tasks = await fetchTasksFromDatabase("/tasks");
+    for (const task of tasks) {
+        const generatedTask = generateTaskElement(task);
+        tasksContainer.appendChild(generatedTask);
+        await sleep(150);
+    }
+
 
     // When Search icon is clicked, search input
     // width increases, brand header width decreases
@@ -40,8 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
     addTaskForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        generateTaskElement(addTaskInput.value);
-        await addTask("/tasks", addTaskInput.value);
+        // Grab data from added task
+        let addedTask = await addTaskToDatabase("/tasks", addTaskInput.value);
+        addedTask = addedTask[0];
+
+        // Generate new DOM task using that data
+        const generatedTaskElement = generateTaskElement(addedTask);
+        tasksContainer.prepend(generatedTaskElement);
+
     });
 
 
@@ -49,14 +68,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// Clear the tasks container
+function clearTasksContainer(tasksContainer) {
+    tasksContainer.innerHTML = "";
+
+}
+
 // Generate a task element
-function generateTaskElement(taskNameInput) {
+function generateTaskElement(task) {
     // Centralized class definitions
     const taskClasses = {
         taskItemContainer: [
             "h-20", "cursor-pointer", "w-full", "flex", "items-center", "justify-between",
             "bg-cyber-accent/80", "border", "border-neon-blue/30", "rounded-xl",
-            "px-4", "py-3", "shadow-lg", "hover:shadow-[0_0_15px_#0ff]", "transition-all"
+            "px-4", "py-3", "shadow-lg", "hover:shadow-[0_0_15px_#0ff]", "transition-all",
+            "fade-in-bottom-normal"
         ],
         leftTaskInfoContainer: ["max-w-50"],
         taskName: ["text-neon-pink", "text-sm", "font-bold"],
@@ -69,9 +95,6 @@ function generateTaskElement(taskNameInput) {
         buttonIcon: ["w-5", "h-5", "object-contain"]
     };
 
-
-    const tasksContainer = document.getElementById("tasksContainer");
-
     // Create container for a single task
     const taskItemContainer = document.createElement("div");
     taskItemContainer.classList.add(...taskClasses.taskItemContainer);
@@ -83,12 +106,12 @@ function generateTaskElement(taskNameInput) {
     // Task name
     const taskName = document.createElement("h3");
     taskName.classList.add(...taskClasses.taskName);
-    taskName.innerText = taskNameInput;
+    taskName.innerText = task.task_name;
 
     // Task date (always now)
     const taskDate = document.createElement("p");
-    const now = new Date();
-    taskDate.innerText = now.toLocaleString([], {
+    const date = task.created_at ? new Date(task.created_at) : new Date();
+    taskDate.innerText = date.toLocaleString([], {
         weekday: "short",
         month: "short",
         day: "numeric",
@@ -102,23 +125,9 @@ function generateTaskElement(taskNameInput) {
     const rightTaskButtonsContainer = document.createElement("div");
     rightTaskButtonsContainer.classList.add(...taskClasses.rightTaskButtonsContainer);
 
-    // ✅ Complete Button
-    const completeButton = document.createElement("button");
-    completeButton.classList.add(...taskClasses.button);
-    const completeIcon = document.createElement("img");
-    completeIcon.src = "./assets/icons/check-mark.png";
-    completeIcon.alt = "Complete";
-    completeIcon.classList.add(...taskClasses.buttonIcon);
-    completeButton.appendChild(completeIcon);
-
-    // ✅ Edit Button
-    const editButton = document.createElement("button");
-    editButton.classList.add(...taskClasses.button);
-    const editIcon = document.createElement("img");
-    editIcon.src = "./assets/icons/editing.png";
-    editIcon.alt = "Edit";
-    editIcon.classList.add(...taskClasses.buttonIcon);
-    editButton.appendChild(editIcon);
+    // Complete & Edit button
+    const completeButton = createIconButton("./assets/icons/check-mark.png", "Complete", taskClasses.button);
+    const editButton = createIconButton("./assets/icons/editing.png", "Edit", taskClasses.button);
 
     // Build structure
     leftTaskInfoContainer.appendChild(taskName);
@@ -128,18 +137,27 @@ function generateTaskElement(taskNameInput) {
     taskItemContainer.appendChild(leftTaskInfoContainer);
     taskItemContainer.appendChild(rightTaskButtonsContainer);
 
-    // Add to container
-    tasksContainer.appendChild(taskItemContainer);
+    // return task item
+    return taskItemContainer;
 }
 
 
-// API Test
-async function fetchTasks(apiUrl) {
-    await fetch(apiUrl);
+// Fetch tasks from database
+async function fetchTasksFromDatabase(apiUrl) {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (data.success) {
+        return data.tasks;
+    }
+    else {
+        return data.errorMessage;
+    }
+
 }
 
 // Add task to database
-async function addTask(apiUrl, taskInput) {
+async function addTaskToDatabase(apiUrl, taskInput) {
 
     const response = await fetch(apiUrl, {
         method: "POST",
@@ -150,14 +168,27 @@ async function addTask(apiUrl, taskInput) {
     const data = await response.json();
 
     if (data.success) {
-        console.dir(`Success: ${data.message}`);
-        console.dir(`Status: ${data.status}`);
-        console.dir(`Task Added: ${JSON.stringify(data.inserted, null, 2)}`);
+        return data.task;
     } else {
-        console.error(data.errorMessage);
+        return data.errorMessage;
     }
-
-
 
 }
 
+
+// Create task complete and edit buttons
+function createIconButton(src, alt, classes) {
+    const button = document.createElement("button");
+    button.classList.add(...classes);
+    const icon = document.createElement("img");
+    icon.src = src;
+    icon.alt = alt;
+    icon.classList.add("w-5", "h-5", "object-contain");
+    button.appendChild(icon);
+    return button;
+}
+
+// Delay method
+async function sleep(ms) {
+    return new Promise(res => setTimeout(res, ms));
+}

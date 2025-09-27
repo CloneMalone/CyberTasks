@@ -4,23 +4,34 @@ const { supabase } = require("@db/supabase");
 
 // Get all tasks
 async function getAllTasks(req, res) {
-    console.dir("getAllTasks Controller Reached!");
+    const { data, status, error } = await supabase
+        .from(`${TABLES.TASKS}`)
+        .select()
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        return res.status(400).json({ success: false, errorMessage: error.message });
+    }
+
+    // Successful retrieval
+    return res.status(status).json({
+        success: true,
+        status: status,
+        message: "Tasks retrieved successfully!",
+        tasks: data,
+    });
 }
 
 // Add task
 async function addTask(req, res) {
-    // Grab the task from the body
-    const task = {
-        taskName: req.body.taskName
-    }
+    const task = req.body.taskName;
 
     // Insert task into SupaBase tasks table
     const {data, error, status} = await supabase
         .from(`${TABLES.TASKS}`)
-        .insert({ task_name: task.taskName })
-        .select()
+        .insert({ task_name: task })
+        .select();
 
-    // Catch any errors
     if (error) {
         return res.status(400).json({ success: false, errorMessage: error.message });
     }
@@ -30,7 +41,7 @@ async function addTask(req, res) {
         success: true,
         status: status,
         message: "Task added successfully!",
-        inserted: data,
+        task: data,
     });
 
 }

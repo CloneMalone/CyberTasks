@@ -14,7 +14,21 @@
         opacity: 1;
     }
 }
-
 .fade-in-bottom-normal {
     animation: fade-in-bottom-normal .6s ease 0s 1 normal none;
+}
+
+
+/* Progress bar animation */
+@keyframes increase-progress-width {
+    0% {
+        width: 0%
+    }
+
+    100% {
+        width: 100%
+    }
+}
+.progress-bar-animation {
+    animation: increase-progress-width 2s ease-in-out forwards;
 }

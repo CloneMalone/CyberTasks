@@ -17,7 +17,7 @@
         <!-- Brand Header & Search Bar -->
         <header class=" bg-cyber-bg z-50">
             <div class="flex justify-between items-center">
-                <h1 id="brandHeader" class="text-neon-pink text-2xl transition-all">CyberTasks</h1>
+                <a href="/" id="brandHeader" class="text-neon-pink text-2xl transition-all">CyberTasks</a>
                 <div class="relative">
                     <input id="searchInput" placeholder="Search..."
                         class="input shadow-lg focus:border-2 border-neon-blue px-5 py-3 rounded-xl w-0 transition-all text-neon-blue focus:w-64 outline-none"
@@ -35,10 +35,11 @@
         <section class="flex flex-col gap-4 mt-13">
 
             <!-- Deploy Task Button -->
-            <div id="deploytaskButton" class="hover:shadow-[0_0_15px_#0ff] transition-all cursor-pointer p-5 w-full rounded-2xl mx-auto bg-cyber-accent/80 border border-neon-blue/30"">
+            <div id="deploytaskButton"
+                class="hover:shadow-[0_0_15px_#0ff] transition-all cursor-pointer p-5 w-full rounded-2xl mx-auto bg-cyber-accent/80 border border-neon-blue/30"">
 
-                <div class="flex items-center justify-center gap-7">
-                    <svg class=" stroke-neon-blue fill-none group-hover:fill-teal-800 group-active:stroke-teal-200
+                <div class=" flex items-center justify-center gap-7">
+                <svg class=" stroke-neon-blue fill-none group-hover:fill-teal-800 group-active:stroke-teal-200
                     group-active:fill-teal-600 group-active:duration-0 duration-300" viewBox="0 0 24 24" height="32px"
                     width="32px" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-width="1.5"
@@ -46,45 +47,54 @@
                     </path>
                     <path stroke-width="1.5" d="M8 12H16"></path>
                     <path stroke-width="1.5" d="M12 16V8"></path>
-                    </svg>
-                    <p class="text-neon-blue text-2xl">Deploy Task</p>
-                </div>
-
+                </svg>
+                <p class="text-neon-blue text-2xl">Deploy Task</p>
             </div>
-
-            <!-- Add Task Form [Opens when you click Deploy Task] -->
-            <div id="taskFormContainer" class="max-h-0 overflow-hidden opacity-0 transition-all duration-1000 ease">
-                <form id="taskForm" class="mt-4 p-4 flex flex-col gap-3 bg-cyber-accent/80 border border-neon-blue/30 rounded-xl">
-                    <input id="taskInput" type="text" placeholder="Task" name="taskName" class="w-full py-3 px-3 rounded bg-black/50 text-white focus:border-neon-pink" required>
-                    <button type="submit" class="mt-3 px-4 py-2 bg-neon-blue text-black rounded cursor-pointer hover:bg-neon-blue/80">Add</button>
-                </form>
-            </div> 
-
-            <!-- Task Matrix -->
-            <div class="flex flex-col items-center mb-5">
-
-                <div class="mb-5">
-                    <h2 class="text-3xl text-neon-blue mt-5">Incoming Objectives</h2>
-                </div>
-
-                <!-- Task Container (Tasks will be dynamically added from database) -->
-                <div id="tasksContainer" class="w-full flex flex-col gap-3">
-
-                </div>
-
-
-            </div>
-            
-
-        </section>
-
-        <!-- Footer & Attributions -->
-        <footer class=" w-full text-sm mt-10">
-            <div class="text-neon-blue/30"> Icons made by <a href="https://www.freepik.com" title="Freepik"> Freepik </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-        </footer>
 
     </div>
-    <script src="app.js"></script>
+
+    <!-- Add Task Form [Opens when you click Deploy Task] -->
+    <div id="taskFormContainer" class="max-h-0 overflow-hidden opacity-0 transition-all duration-1000 ease">
+        <form id="taskForm"
+            class="mt-4 p-4 flex flex-col gap-3 bg-cyber-accent/80 border border-neon-blue/30 rounded-xl">
+            <input id="taskInput" type="text" placeholder="Task" name="taskName"
+                class="w-full py-3 px-3 rounded bg-black/50 text-white focus:border-neon-pink" required>
+            <button type="submit"
+                class="mt-3 px-4 py-2 bg-neon-blue text-black rounded cursor-pointer hover:bg-neon-blue/80">Add</button>
+        </form>
+    </div>
+
+    <!-- Task Matrix -->
+    <div class="flex flex-col items-center mb-5">
+
+        <div class="w-full mt-5 mb-5">
+            <h2 class="text-3xl w-full text-center md:text-left text-neon-blue">
+                Active Protocols
+            </h2>
+        </div>
+
+        <!-- Progress Bar -->
+         <div id="progressBarAndTextContainer" class="w-full flex flex-col items-center md:items-start"></div>
+
+        <!-- Task Container (Tasks will be dynamically added from database) -->
+        <div id="tasksContainer" class="w-full flex flex-col gap-3">
+
+        </div>
+
+
+    </div>
+
+
+    </section>
+
+    <!-- Footer & Attributions -->
+    <footer class=" w-full text-sm mt-10">
+        <div class="text-neon-blue/30"> Icons made by <a href="https://www.freepik.com" title="Freepik"> Freepik </a>
+            from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+    </footer>
+
+    </div>
+    <script type="module" src="js/app.js"></script>
 </body>
 
 

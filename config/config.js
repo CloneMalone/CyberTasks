@@ -1,6 +1,4 @@
-// Store table names once to be used across entire app
-const TABLES = {
+// Store values once to be used across the entire app
+export const TABLES = {
     TASKS: "tasks",
 };
-
-module.exports = { TABLES };

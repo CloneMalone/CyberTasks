@@ -11,14 +11,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Grab DOM elements
     const searchInput = document.getElementById("searchInput");
     const searchIcon = document.getElementById("searchIcon");
-    const brandHeader = document.getElementById("brandHeader");
     const tasksContainer = document.getElementById("tasksContainer");
-    const progressBarAndTextContainer = document.getElementById("progressBarAndTextContainer");
 
     // Clear tasks container
     clearTasksContainer(tasksContainer);
 
     // Retrieve all tasks, insert in tasks container
+    const progressBarAndTextContainer = document.getElementById("progressBarAndTextContainer");
     progressBar(progressBarAndTextContainer);
     const tasks = await fetchTasksFromDatabase("/tasks");
     progressBarAndTextContainer.remove();
@@ -35,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         searchInput.classList.add("w-50");
         searchInput.focus();
 
+        const brandHeader = document.getElementById("brandHeader");
         brandHeader.classList.remove("text-2xl");
         brandHeader.classList.add("text-sm");
     });

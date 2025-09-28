@@ -62,6 +62,7 @@ export function generateTaskElement(task) {
 
     // Complete & Edit button
     const completeButton = createIconButton("./assets/icons/check-mark.png", "Complete", taskClasses.button);
+    completeButton.id = `${task.id}`;
     const editButton = createIconButton("./assets/icons/editing.png", "Edit", taskClasses.button);
 
     // Build structure

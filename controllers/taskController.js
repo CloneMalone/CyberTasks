@@ -1,9 +1,9 @@
 // Import TABLES and supabase client
-const { TABLES } = require("@config/config");
-const { supabase } = require("@db/supabase");
+import { TABLES } from "#config/config.js";
+import { supabase } from "#db/supabase.js";
 
 // Get all tasks
-async function getAllTasks(req, res) {
+export async function getAllTasks(req, res) {
     const { data, status, error } = await supabase
         .from(`${TABLES.TASKS}`)
         .select()
@@ -23,7 +23,7 @@ async function getAllTasks(req, res) {
 }
 
 // Add task
-async function addTask(req, res) {
+export async function addTask(req, res) {
     const task = req.body.taskName;
 
     // Insert task into SupaBase tasks table
@@ -45,5 +45,3 @@ async function addTask(req, res) {
     });
 
 }
-
-module.exports = { getAllTasks, addTask };

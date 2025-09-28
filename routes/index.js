@@ -1,6 +1,6 @@
 // Bundle directory as one export
-const taskRoutes = require("./taskRoutes");
+import taskRoutes from "./taskRoutes.js";
 
-module.exports = {
-    taskRoutes,
+export {
+  taskRoutes,
 };

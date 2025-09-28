@@ -16,7 +16,14 @@
     "@routes": "routes",
     "@config": "config"
   },
-  "type": "commonjs",
+  "type": "module",
+  "imports": {
+    "#routes/*": "./routes/*",
+    "#models/*": "./models/*",
+    "#db/*": "./db/*",
+    "#controllers/*": "./controllers/*",
+    "#config/*": "./config/*"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

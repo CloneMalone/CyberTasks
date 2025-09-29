@@ -24,8 +24,11 @@ A lightweight, modern to-do web app built with Express and Supabase. CyberTasks 
 
 ## 🛠 Tech Stack
 **Front End:** HTML, vanilla JavaScript, Tailwind CSS
+
 **Back End:** Node.js, Express
+
 **Database:** Supabase (Postgres managed by Supabase)
+
 **Other:** dotenv for config, nodemon for development
 
 ---

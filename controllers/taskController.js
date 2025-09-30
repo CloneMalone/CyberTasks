@@ -1,6 +1,8 @@
-// Import TABLES and supabase client
+// Import
 import { TABLES } from "#config/config.js";
 import { supabase } from "#db/supabase.js";
+import { Task } from "#models/Task.js";
+
 
 // Get all tasks
 export async function getAllTasks(req, res) {
@@ -13,12 +15,23 @@ export async function getAllTasks(req, res) {
         return res.status(400).json({ success: false, errorMessage: error.message });
     }
 
+    // Map each row to a task object
+    const tasks = data.map(row => {
+        const task = new Task(row);
+        return {
+            id: task.id,
+            task_name: task.task_name,
+            created_at: task.created_at,
+            formattedDate: task.formattedDate
+        }
+    });
+
     // Successful retrieval
     return res.status(status).json({
         success: true,
         status: status,
         message: "Tasks retrieved successfully!",
-        tasks: data,
+        tasks: tasks,
     });
 }
 
@@ -36,12 +49,24 @@ export async function addTask(req, res) {
         return res.status(400).json({ success: false, errorMessage: error.message });
     }
 
+    // Grab first row
+    const [row] = data;
+
+    // Create task object
+    const taskObject = new Task(row);
+    const newTaskData = {
+        id: taskObject.id,
+        task_name: taskObject.task_name,
+        created_at: taskObject.created_at,
+        formattedDate: taskObject.formattedDate
+    };
+
     // Successful insertion!
     return res.status(status).json({
         success: true,
         status: status,
         message: "Task added successfully!",
-        task: data,
+        task: newTaskData,
     });
 
 }

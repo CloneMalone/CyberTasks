@@ -126,7 +126,7 @@ const data = await res.json();
 await fetch('/tasks', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ taskName: 'Buy milk' })
+  body: JSON.stringify({ taskName: 'Hang out in night city 🌃' })
 });
 ```
 

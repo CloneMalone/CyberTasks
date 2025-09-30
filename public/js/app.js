@@ -2,9 +2,10 @@ import {
     generateTaskElement,
     clearTasksContainer,
     sleep,
-    progressBar
+    progressBar,
+    expandSearchInput,
+    shrinkSearchInput
 } from "./helper_functions.js";
-
 import { fetchTasksFromDatabase, addTaskToDatabase } from "./api_functions.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -12,12 +13,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const searchInput = document.getElementById("searchInput");
     const searchIcon = document.getElementById("searchIcon");
     const tasksContainer = document.getElementById("tasksContainer");
+    const progressBarAndTextContainer = document.getElementById("progressBarAndTextContainer");
+    const brandHeader = document.getElementById("brandHeader");
+
 
     // Clear tasks container
     clearTasksContainer(tasksContainer);
 
     // Retrieve all tasks, insert in tasks container
-    const progressBarAndTextContainer = document.getElementById("progressBarAndTextContainer");
     progressBar(progressBarAndTextContainer);
     const tasks = await fetchTasksFromDatabase("/tasks");
     progressBarAndTextContainer.remove();
@@ -27,26 +30,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         await sleep(150);
     }
 
-
-    // When Search icon is clicked, search input
-    // width increases, brand header width decreases
+    // Expand search input
     searchIcon.addEventListener("click", () => {
-        searchInput.classList.add("w-50");
-        searchInput.focus();
-
-        const brandHeader = document.getElementById("brandHeader");
-        brandHeader.classList.remove("text-2xl");
-        brandHeader.classList.add("text-sm");
+        expandSearchInput(searchInput, brandHeader);
     });
 
     // When Search input loses focus,
     // width decreases, brand header width increases
     searchInput.addEventListener("blur", () => {
-        searchInput.classList.remove("w-50");
-        searchInput.classList.add("w-0");
-
-        brandHeader.classList.remove("text-sm");
-        brandHeader.classList.add("text-2xl");
+        shrinkSearchInput(searchInput, brandHeader);
     });
 
     // Deploy task button unveils form
@@ -67,7 +59,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Grab data from added task
         let addedTask = await addTaskToDatabase("/tasks", addTaskInput.value);
-        addedTask = addedTask[0];
 
         // Generate new DOM task using that data
         const generatedTaskElement = generateTaskElement(addedTask);
@@ -75,9 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Clear input
         addTaskInput.value = "";
-        addTaskInput.focus();
     });
-
 
 
 });

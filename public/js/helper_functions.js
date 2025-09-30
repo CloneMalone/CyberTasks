@@ -47,15 +47,7 @@ export function generateTaskElement(task) {
     const taskName = createElement("h3", taskClasses.taskName, task.task_name);
 
     // Task date (always now)
-    const date = task.created_at ? new Date(task.created_at) : new Date();
-    const taskDate = createElement("p", taskClasses.taskDate, date.toLocaleString([], {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    }));
+    const taskDate = createElement("p", taskClasses.taskDate, task.formattedDate);
 
     // Right container (buttons)
     const rightTaskButtonsContainer = createElement("div", taskClasses.rightTaskButtonsContainer);
@@ -101,10 +93,28 @@ export async function sleep(ms) {
     return new Promise(res => setTimeout(res, ms));
 }
 
-// Helper: Create element with classes and optional styles
+// Create element with classes and optional styles
 function createElement(tag, classes = [], text = "") {
     const el = document.createElement(tag);
     if (classes.length) el.classList.add(...classes);
     el.innerText = text;
     return el;
+}
+
+// Search input expands
+export function expandSearchInput(searchInput, brandHeader) {
+    searchInput.classList.add("w-50");
+    searchInput.focus();
+
+    brandHeader.classList.remove("text-2xl");
+    brandHeader.classList.add("text-sm");
+}
+
+// Search input shrinks
+export function shrinkSearchInput(searchInput, brandHeader) {
+    searchInput.classList.remove("w-50");
+    searchInput.classList.add("w-0");
+
+    brandHeader.classList.remove("text-sm");
+    brandHeader.classList.add("text-2xl");
 }

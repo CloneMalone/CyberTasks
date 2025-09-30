@@ -49,7 +49,7 @@ export async function addTask(req, res) {
         return res.status(400).json({ success: false, errorMessage: error.message });
     }
 
-    // Grab first row
+    // Grab first row (supabase always returns arrays with inserted rows)
     const [row] = data;
 
     // Create task object
@@ -68,5 +68,45 @@ export async function addTask(req, res) {
         message: "Task added successfully!",
         task: newTaskData,
     });
+
+}
+
+// Delete task
+export async function deleteTask(req, res) {
+    // Grab request body (Task ID)
+    const taskId = req.params.id;
+
+    // Delete task from database based on ID
+    const { data, error, status } = await supabase
+        .from(`${TABLES.TASKS}`)
+        .delete()
+        .eq('id', taskId)
+        .select();
+
+    // If there is an error, return error
+    if (error) {
+        return res.status(400).json({ success: false, errorMessage: error.message });
+    }
+
+    // Grab first row (supabase always returns arrays with inserted rows)
+    const [row] = data;
+
+    // Create task object
+    const taskObject = new Task(row);
+    const deletedTaskData = {
+        id: taskObject.id,
+        task_name: taskObject.task_name,
+        created_at: taskObject.created_at,
+        formattedDate: taskObject.formattedDate
+    };
+
+    // Return success
+    return res.status(status).json({
+        success: true,
+        status: status,
+        message: "Task deleted successfully!",
+        task: deletedTaskData,
+    });
+
 
 }

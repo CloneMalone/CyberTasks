@@ -29,3 +29,20 @@ export async function addTaskToDatabase(apiUrl, taskInput) {
         return data.errorMessage;
     }
 }
+
+// Delete task from database
+export async function deleteTaskFromDatabase(apiUrl, taskId) {
+
+    const response = await fetch(`${apiUrl}/${taskId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+        return data.task;
+    } else {
+        return data.errorMessage;
+    }
+}

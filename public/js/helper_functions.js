@@ -1,3 +1,5 @@
+import { deleteTaskFromDatabase } from "./api_functions.js";
+
 // Create task complete and edit buttons
 export function createIconButton(src, alt, classes) {
     const button = document.createElement("button");
@@ -47,7 +49,8 @@ export function generateTaskElement(task) {
     const taskName = createElement("h3", taskClasses.taskName, task.task_name);
 
     // Task date (always now)
-    const taskDate = createElement("p", taskClasses.taskDate, task.formattedDate);
+    const date = task.formattedDate ?? new Date();
+    const taskDate = createElement("p", taskClasses.taskDate, date);
 
     // Right container (buttons)
     const rightTaskButtonsContainer = createElement("div", taskClasses.rightTaskButtonsContainer);
@@ -56,6 +59,17 @@ export function generateTaskElement(task) {
     const completeButton = createIconButton("./assets/icons/check-mark.png", "Complete", taskClasses.button);
     completeButton.id = `${task.id}`;
     const editButton = createIconButton("./assets/icons/editing.png", "Edit", taskClasses.button);
+
+    // Complete button deletes task
+    completeButton.addEventListener("click", async () => {
+        // Delete task from database
+        const deletedTask = await deleteTaskFromDatabase("/tasks", completeButton.id);
+        console.log(deletedTask);
+
+        // Animate task to disappear and remove
+        fadeAndRemove(taskItemContainer);
+
+    });
 
     // Build structure
     leftTaskInfoContainer.appendChild(taskName);
@@ -91,6 +105,19 @@ export function progressBar(progressBarAndTextContainer) {
 // Delay method
 export async function sleep(ms) {
     return new Promise(res => setTimeout(res, ms));
+}
+
+// Fade and remove element
+function fadeAndRemove(element) {
+  if (!element) return;
+
+  // Trigger the animation
+  element.classList.add('fade-out');
+
+  // Listen for animation to end, then remove from DOM
+  element.addEventListener('animationend', () => {
+    element.remove();
+  }, { once: true });
 }
 
 // Create element with classes and optional styles

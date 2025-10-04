@@ -19,7 +19,7 @@ export function clearTasksContainer(tasksContainer) {
 }
 
 // Generate a task element
-export function generateTaskElement(task) {
+export function generateTaskElement(task, taskArray) {
 
     // Assign classes to priority badge according to priority
     function getPriorityClasses(priority) {
@@ -49,7 +49,7 @@ export function generateTaskElement(task) {
             "fade-in-bottom-normal"
         ],
         leftTaskInfoContainer: ["max-w-50", "flex", "flex-col", "flex-1", "gap-1"],
-        taskName: ["text-neon-pink", "text-sm", "font-bold", "flex", "items-center", "gap-2"],
+        taskName: ["task-name", "text-neon-pink", "text-sm", "font-bold", "flex", "items-center", "gap-2"],
         taskDate: ["text-xs", "text-neon-blue/70"],
         taskPriorityBadge: ["priority-badge", "px-2", "py-1", "rounded-full", "text-xs", "font-semibold", ...getPriorityClasses(task.priority)],
         rightTaskButtonsContainer: ["flex", "gap-2", "flex-shrink-0"],
@@ -62,14 +62,13 @@ export function generateTaskElement(task) {
 
     // Create container for a single task
     const taskItemContainer = createElement("div", taskClasses.taskItemContainer)
+    taskItemContainer.id = `${task.id}`;
 
     // Left container (task name + date)
     const leftTaskInfoContainer = createElement("div", taskClasses.leftTaskInfoContainer);
 
     // Task name
     const taskName = createElement("h3", taskClasses.taskName, task.task_name);
-
-    
 
     // Task priority
     const taskPriorityBadge = createElement("span", taskClasses.taskPriorityBadge, task.priority);
@@ -83,18 +82,12 @@ export function generateTaskElement(task) {
 
     // Complete & Edit button
     const completeButton = createIconButton("./assets/icons/check-mark.png", "Complete", taskClasses.button);
-    completeButton.id = `${task.id}`;
     const editButton = createIconButton("./assets/icons/editing.png", "Edit", taskClasses.button);
 
     // Complete button deletes task
     completeButton.addEventListener("click", async () => {
         // Delete task from database
-        const deletedTask = await deleteTaskFromDatabase("/tasks", completeButton.id);
-        console.log(deletedTask);
-
-        // Animate task to disappear and remove
-        fadeAndRemove(taskItemContainer);
-
+        deleteTaskAndReturnNewTasksArray(taskItemContainer.id, taskArray, taskItemContainer);
     });
 
     // Build structure
@@ -108,6 +101,20 @@ export function generateTaskElement(task) {
 
     // return task item
     return taskItemContainer;
+}
+
+// Delete Task from Database, DOM, and array
+export async function deleteTaskAndReturnNewTasksArray(taskId, taskArray, taskItemContainer) {
+    try {
+        await deleteTaskFromDatabase("/tasks", taskId);
+        const newTaskArray = taskArray.filter(task => task.id !== taskId);
+        taskArray.length = 0;
+        taskArray.push(...newTaskArray);
+        fadeAndRemove(taskItemContainer);
+    } catch (e) {
+        console.error(`Error completing task: ${e}`);
+        return;
+    }
 }
 
 // Progress bar 

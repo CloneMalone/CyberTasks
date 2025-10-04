@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const verticalLine = document.getElementById("verticalLine");
     const deployTaskButtonText = document.getElementById("deployTaskButtonText");
 
-
     // Clear tasks container
     clearTasksContainer(tasksContainer);
 
@@ -29,10 +28,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tasks = await fetchTasksFromDatabase("/tasks");
     progressBarAndTextContainer.remove();
     for (const task of tasks) {
-        const generatedTask = generateTaskElement(task);
+        const generatedTask = generateTaskElement(task, tasks);
         tasksContainer.appendChild(generatedTask);
         await sleep(150);
     }
+
 
     // Expand search input
     searchIcon.addEventListener("click", () => {
@@ -43,6 +43,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     // width decreases, brand header width increases
     searchInput.addEventListener("blur", () => {
         shrinkSearchInput(searchInput, brandHeader);
+    });
+
+    // Search tasks
+    searchInput.addEventListener("input", (event) => {
+        clearTasksContainer(tasksContainer);
+
+        // If the input is empty, add all tasks to the container
+        if (event.target.value.trim() == "") {
+            for (const task of tasks) {
+                const generatedTask = generateTaskElement(task, tasks);
+                tasksContainer.appendChild(generatedTask);
+            }
+            return;
+        }
+
+        // Filter tasks by input
+        for (const task of tasks) {
+            let taskName = task.task_name.toLowerCase();
+            let searchValue = event.target.value.toLowerCase().trim();
+
+            if (taskName.includes(searchValue)) {
+                const generatedTask = generateTaskElement(task, tasks);
+                tasksContainer.appendChild(generatedTask);
+            }
+        }
+        
     });
 
     // Deploy task button unveils form
@@ -64,16 +90,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     addTaskForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        // Grab data from added task
-        let addedTask = await addTaskToDatabase("/tasks", addTaskInput.value, selectPriorityOptions.value);
+        // Grab data from added task, add to global tasks array
+        const addedTask = await addTaskToDatabase("/tasks", addTaskInput.value, selectPriorityOptions.value);
+        tasks.unshift(addedTask);
 
         // Generate new DOM task using that data
-        const generatedTaskElement = generateTaskElement(addedTask);
+        const generatedTaskElement = generateTaskElement(addedTask, tasks);
         tasksContainer.prepend(generatedTaskElement);
 
         // Clear input
         addTaskInput.value = "";
     });
+
+
+    // Delete task from database, DOM, and array
+
 
 
 });

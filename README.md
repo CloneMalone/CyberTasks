@@ -7,68 +7,56 @@ A lightweight, modern to-do web app built with Express and Supabase. CyberTasks 
 ## 📸 Screenshots
 ![App Screenshot 1](public/assets/screenshot-1.png)
 
----
+## Current status
 
-## ✨ Features
-- View a list of tasks (sorted by newest first)
-- Add new tasks (via the add-task form)
-- Static single-page front end with Tailwind CSS for rapid styling
-- Supabase used as the backend database (postgREST-like API via the Supabase client)
+- Core functionality implemented:
+  - View tasks (GET /tasks) — tasks are returned newest-first and include a pre-formatted display date.
+  - Add tasks (POST /tasks) — the API accepts a JSON body and inserts a new row into the configured Supabase table.
+  - Delete tasks (DELETE /tasks/:id) — delete a task by id.
+- Static single-page frontend in `public/` that fetches tasks from the server and renders them with vanilla JS.
+- Styling with Tailwind CSS and small CSS/animation helpers under `public/css/animation.css`.
+- Supabase client is initialized in `db/supabase.js` and table name is configured in `config/config.js`.
 
-## 📝 Planned (coming soon): 
-1. Edit and complete task actions
+Note: user authentication is not implemented yet — all API calls are unauthenticated and operate on a single shared `tasks` table.
 
-2. User sign up / sign in, and per-user task lists.
-
----
-
-## 🛠 Tech Stack
-**Front End:** HTML, vanilla JavaScript, Tailwind CSS
-
-**Back End:** Node.js, Express
-
-**Database:** Supabase (Postgres managed by Supabase)
-
-**Other:** dotenv for config, nodemon for development
-
----
-
-## 📂 Project Structure
-Root of repository (relevant files and folders):
+## Project structure (important files)
 
 ```
 package.json
-server.js                # Express server entry (ESM)
-.env                     # Local environment variables (ignored by git)
-config/                  # Application configuration (table names etc.)
-controllers/             # Request handlers
-db/                      # Database client wrapper (Supabase)
-models/                  # (empty / future models)
-public/                  # Front-end static files (served by Express)
+server.js                 # Express server (ESM)
+.env                      # Local env vars (not checked in)
+config/config.js          # App configuration (table names)
+controllers/taskController.js  # Route handlers for /tasks
+db/supabase.js            # Supabase client wrapper
+models/Task.js            # Task model with date formatting helper
+routes/taskRoutes.js      # Express router for tasks
+public/                   # Static frontend (HTML, CSS, JS)
   ├─ index.html
-  ├─ js/
-  ├─ assets/
-  └─ output.css
-routes/                  # Express routers
-README.md
+  ├─ js/app.js
+  ├─ js/api_functions.js
+  ├─ js/helper_functions.js
+  └─ css/* (Tailwind output + small custom files)
 ```
 
----
+## Tech stack
 
-## ⚙️ Installation & Setup
-1. Clone the repo
+- Frontend: HTML, vanilla JavaScript
 
-   git clone <repo-url>
+- Styling: Tailwind CSS (CLI)
 
-2. Change into the project directory
+- Backend: Node.js + Express (ESM)
 
-   cd CyberTasks
+- Database: Supabase (Postgres) via `@supabase/supabase-js`
 
-3. Install dependencies
+- Dev tools: dotenv, nodemon
+
+## Quick start
+
+1. Install dependencies
 
    npm install
 
-4. Create a `.env` file at the project root and add these values (example already provided in `.env.example` or below):
+2. Create a `.env` file at the project root with these variables:
 
 ```
 PORT=3867
@@ -77,79 +65,103 @@ SUPABASE_KEY=your-service-or-anon-key
 SUPABASE_TABLE=tasks
 ```
 
-Use a Supabase project and table named `tasks` (or change `SUPABASE_TABLE` appropriately). The server uses `dotenv` to load environment variables.
+3. Run the server (dev):
 
-5. Start the app
-
-Development (auto-reload):
-
-```bash
+```
 npm run dev
+
 ```
 
-Production / simple run:
+4. Open http://localhost:3867 in your browser.
 
-```bash
-npm start
-```
+Notes:
+- The Tailwind CLI scripts are declared in `package.json`:
+  - `npm run tailwind` — watch and rebuild `public/css/output.css`
+  - `npm run build:css` — build minified output once
 
-6. Tailwind CSS (build or watch)
+## API (server-side routes)
 
-Build once:
+All routes are mounted at the `/tasks` path in `server.js`.
 
-```bash
-npm run build:css
-```
+- GET /tasks
+  - Returns a JSON payload with the list of tasks (newest first).
+  - Example response shape:
+    {
+      success: true,
+      status: 200,
+      message: "Tasks retrieved successfully!",
+      tasks: [{ id, task_name, created_at, priority, formattedDate }, ...]
+    }
 
-Watch for changes during front-end development:
+- POST /tasks
+  - Expects JSON body: { taskName: string, taskPriority: string }
+  - Inserts a new row into the configured Supabase table and returns the inserted task.
 
-```bash
-npm run tailwind
-```
+- DELETE /tasks/:id
+  - Deletes a task by id and returns the deleted row.
 
-Open http://localhost:3867 (or the PORT you set) in your browser.
+Server implementation notes:
+- The server uses `db/supabase.js` to initialize the Supabase client with `SUPABASE_URL` and `SUPABASE_KEY`.
+- Table name is taken from `config/config.js` (TABLES.TASKS).
 
----
+## Client (public/js)
 
-## 📊 Usage Examples
-- Fetch all tasks (server route): GET /tasks
-- Add a task (server route): POST /tasks with JSON body { "taskName": "My new task" }
+- `public/js/app.js` is the entry-point for the front-end behavior. It:
+  - Fetches tasks from `/tasks` and renders them using helpers in `helper_functions.js`.
+  - Handles adding a task (POST /tasks) and immediately inserts the new task into the DOM.
+- `public/js/api_functions.js` contains small helpers that call the server endpoints and return parsed responses.
 
-Example JavaScript (client-side fetch)
+## Future implementations (planned)
 
-```js
-// Fetch tasks
-const res = await fetch('/tasks');
-const data = await res.json();
+This project will be extended to add per-user task lists and authentication. Below is a plan and suggested implementation approach.
 
-// Add a task
-await fetch('/tasks', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ taskName: 'Hang out in night city 🌃' })
-});
-```
+High level goals:
+- Add user registration and login.
+- Associate tasks with users so each user sees only their own tasks.
+- Secure API endpoints so only authenticated users can call them.
 
----
+Future implementation (step-by-step)
 
-## 🧠 Lessons Learned
-- Keeping configuration centralized (`config/config.js`) makes it easy to change table names or other constants.
-- Serving a small, static front-end from the same Express app keeps the project simple for quick demos.
-- Using Supabase's JS client simplifies CRUD patterns without writing custom SQL endpoints.
+1) Supabase authentication vs custom auth
+   - Option A (recommended): Use Supabase Auth (built-in). It simplifies token management, handles registration/login, and integrates with the Supabase client on the server and client.
+   - Option B: Implement a custom JWT-based auth using an `users` table and issuing JWTs from the Express server. This requires managing password hashing, token rotation, and security considerations. Only choose this if you need custom control.
+
+2) Database changes
+   - Add a `users` table (if using Supabase Auth, this is managed by Supabase) and modify the `tasks` table to include a `user_id` foreign key column.
+   - Migrate existing tasks if needed (for now, unowned tasks can be left as null or assigned to a default account).
+
+3) Authentication flow (Supabase Auth recommended)
+   - Client: Use Supabase client in the front-end to sign up and sign in users. After successful sign-in, Supabase returns an access token (JWT).
+   - Server: Protect routes by verifying the Supabase JWT in incoming requests. The Supabase Admin SDK or JWT verification middleware can be used to validate tokens and extract the user ID.
+   - Updated endpoint behavior: when creating a task, include the user id (from the authenticated session) so tasks are scoped to the user. When fetching tasks, filter by user id.
+
+4) Server-side changes
+   - Add auth middleware that validates the Supabase JWT (or your JWT) and sets req.user = { id, email }.
+   - Update `controllers/taskController.js` to use req.user.id when inserting/selecting/deleting tasks.
+   - Optionally add user routes (POST /auth/signup, POST /auth/login) only if you implement custom auth on the server.
+
+5) Front-end changes
+   - Add a small login/signup UI in `public/` (modal or separate page).
+   - After login, store the Supabase auth session token in localStorage/sessionStorage (or rely on the Supabase client which handles session by default).
+   - Include the Authorization header (Bearer token) on API requests to server endpoints if the server expects it.
+
+6) Security and edge cases
+   - Validate input on both client and server (empty task name, excessively long text).
+   - Enforce rate limiting/throttling if this becomes public.
+   - Ensure passwords are never logged and that tokens are stored securely on the client.
+
+7) Testing and migration
+   - Create migration scripts or SQL to add `user_id` column and relevant indexes.
+   - Write integration tests for auth-protected endpoints (happy path + unauthorized access).
 
 ---
 
 ## 🚀 Future Improvements
-- [ ] Edit and Complete tasks (UI + API)
+- [ ] Edit tasks (UI + API)
 - [ ] Per-user task lists (require authentication)
 - [ ] User registration and sign in (Supabase Auth or custom auth)
 - [ ] Input validation + better error handling on the server
 - [ ] Add automated tests and CI workflow
-
----
-
-## 📜 License
-This project is released under the MIT License. See `LICENSE` for details (add one if you want to publish).
 
 ---
 

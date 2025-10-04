@@ -20,18 +20,39 @@ export function clearTasksContainer(tasksContainer) {
 
 // Generate a task element
 export function generateTaskElement(task) {
+
+    // Assign classes to priority badge according to priority
+    function getPriorityClasses(priority) {
+        switch (priority) {
+            case "low":
+                return ["bg-blue-500/40", "text-blue-400", "priority-low-pulse"];
+            case "medium":
+                return [
+                    "relative", "overflow-hidden", "rounded-full", "px-2", "py-1", // container styling
+                    "text-white", // text stays readable
+                    "priority-medium-shimmer" // animation
+                ];
+            case "high":
+                return ["bg-red-500/50", "text-red-400", "priority-high-flicker"];
+            default:
+                return ["bg-gray-500/40", "text-gray-200"];
+        }
+    }
+
+
     // Centralized class definitions
     const taskClasses = {
         taskItemContainer: [
-            "h-20", "cursor-pointer", "w-full", "flex", "items-center", "justify-between",
+            "min-h-20", "cursor-pointer", "w-full", "flex", "items-center", "justify-between",
             "bg-cyber-accent/80", "border", "border-neon-blue/30", "rounded-xl",
             "px-4", "py-3", "shadow-lg", "hover:shadow-[0_0_15px_#0ff]", "transition-all",
             "fade-in-bottom-normal"
         ],
-        leftTaskInfoContainer: ["max-w-50"],
-        taskName: ["text-neon-pink", "text-sm", "font-bold"],
+        leftTaskInfoContainer: ["max-w-50", "flex", "flex-col", "flex-1", "gap-1"],
+        taskName: ["text-neon-pink", "text-sm", "font-bold", "flex", "items-center", "gap-2"],
         taskDate: ["text-xs", "text-neon-blue/70"],
-        rightTaskButtonsContainer: ["flex", "gap-2"],
+        taskPriorityBadge: ["priority-badge", "px-2", "py-1", "rounded-full", "text-xs", "font-semibold", ...getPriorityClasses(task.priority)],
+        rightTaskButtonsContainer: ["flex", "gap-2", "flex-shrink-0"],
         button: [
             "cursor-pointer", "p-2", "bg-neon-blue", "text-black", "rounded",
             "hover:bg-neon-blue/80", "transition-colors"
@@ -47,6 +68,11 @@ export function generateTaskElement(task) {
 
     // Task name
     const taskName = createElement("h3", taskClasses.taskName, task.task_name);
+
+    
+
+    // Task priority
+    const taskPriorityBadge = createElement("span", taskClasses.taskPriorityBadge, task.priority);
 
     // Task date (always now)
     const date = task.formattedDate ?? new Date();
@@ -72,6 +98,7 @@ export function generateTaskElement(task) {
     });
 
     // Build structure
+    taskName.appendChild(taskPriorityBadge);
     leftTaskInfoContainer.appendChild(taskName);
     leftTaskInfoContainer.appendChild(taskDate);
     rightTaskButtonsContainer.appendChild(completeButton);
@@ -109,15 +136,15 @@ export async function sleep(ms) {
 
 // Fade and remove element
 function fadeAndRemove(element) {
-  if (!element) return;
+    if (!element) return;
 
-  // Trigger the animation
-  element.classList.add('fade-out');
+    // Trigger the animation
+    element.classList.add('fade-out');
 
-  // Listen for animation to end, then remove from DOM
-  element.addEventListener('animationend', () => {
-    element.remove();
-  }, { once: true });
+    // Listen for animation to end, then remove from DOM
+    element.addEventListener('animationend', () => {
+        element.remove();
+    }, { once: true });
 }
 
 // Create element with classes and optional styles
@@ -135,6 +162,14 @@ export function expandSearchInput(searchInput, brandHeader) {
 
     brandHeader.classList.remove("text-2xl");
     brandHeader.classList.add("text-sm");
+}
+
+// Deploy Task Button reveals form
+export function displayAddTaskForm(formContainer) {
+    formContainer.classList.toggle("max-h-0");
+    formContainer.classList.toggle("opacity-0");
+    formContainer.classList.toggle("max-h-[500px]");
+    formContainer.classList.toggle("opacity-100");
 }
 
 // Search input shrinks

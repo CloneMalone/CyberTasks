@@ -4,7 +4,8 @@ import {
     sleep,
     progressBar,
     expandSearchInput,
-    shrinkSearchInput
+    shrinkSearchInput,
+    displayAddTaskForm
 } from "./helper_functions.js";
 import { fetchTasksFromDatabase, addTaskToDatabase } from "./api_functions.js";
 
@@ -15,6 +16,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tasksContainer = document.getElementById("tasksContainer");
     const progressBarAndTextContainer = document.getElementById("progressBarAndTextContainer");
     const brandHeader = document.getElementById("brandHeader");
+    const formContainer = document.getElementById("taskFormContainer");
+    const verticalLine = document.getElementById("verticalLine");
+    const deployTaskButtonText = document.getElementById("deployTaskButtonText");
 
 
     // Clear tasks container
@@ -32,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Expand search input
     searchIcon.addEventListener("click", () => {
-        expandSearchInput(searchInput, brandHeader);
+        expandSearchInput(searchInput, brandHeader, verticalLine);
     });
 
     // When Search input loses focus,
@@ -42,23 +46,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Deploy task button unveils form
-    document.getElementById("deploytaskButton").addEventListener("click", () => {
-        const formContainer = document.getElementById("taskFormContainer");
-        formContainer.classList.toggle("max-h-0");
-        formContainer.classList.toggle("opacity-0");
-        formContainer.classList.toggle("max-h-[500px]");
-        formContainer.classList.toggle("opacity-100");
+    document.getElementById("deployTaskButton").addEventListener("click", (e) => {
+        e.currentTarget.classList.toggle("minus");
+
+        const classes = ["neon-glow", "flicker"];
+        classes.forEach(cls => deployTaskButtonText.classList.toggle(cls));
+        classes.forEach(cls => brandHeader.classList.toggle(cls));
+
+        displayAddTaskForm(formContainer);
     });
 
     // Form submit, add task to database
     const addTaskForm = document.getElementById("taskForm");
     const addTaskInput = document.getElementById("taskInput");
+    const selectPriorityOptions = document.getElementById("prioritySelect");
 
     addTaskForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         // Grab data from added task
-        let addedTask = await addTaskToDatabase("/tasks", addTaskInput.value);
+        let addedTask = await addTaskToDatabase("/tasks", addTaskInput.value, selectPriorityOptions.value);
 
         // Generate new DOM task using that data
         const generatedTaskElement = generateTaskElement(addedTask);

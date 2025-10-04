@@ -1,8 +1,9 @@
 export class Task {
-    constructor({ id, task_name, created_at }) {
+    constructor({ id, task_name, created_at, priority }) {
         this.id = id;
         this.task_name = task_name;
         this.created_at = created_at;
+        this.priority = priority;
     }
 
     get formattedDate() {

@@ -11,9 +11,15 @@
   /* Custom Fonts */
   --font-cyber: Orbitron, ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 
-  /* Custom Shadows (glows) */
+  /* Custom Shadows (Glows) */
   --shadow-neon-glow: 0 0 5px theme(colors.neon.blue), 0 0 10px theme(colors.neon.blue), 0 0 15px theme(colors.neon.blue);
   --shadow-pink-glow: 0 0 5px theme(colors.neon.pink), 0 0 10px theme(colors.neon.pink), 0 0 20px theme(colors.neon.pink);
+
+  /* Text Neon Glow */
+  --shadow-text-glow:
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor;
 
   /* Filters for icons */
   --filter-neon-blue: 'brightness(0) saturate(100%) invert(39%) sepia(93%) saturate(749%) hue-rotate(175deg) brightness(104%) contrast(97%)';

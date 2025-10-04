@@ -13,12 +13,15 @@ export async function fetchTasksFromDatabase(apiUrl) {
 }
 
 // Add task to database
-export async function addTaskToDatabase(apiUrl, taskInput) {
+export async function addTaskToDatabase(apiUrl, taskInput, taskPriority) {
 
     const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ taskName: taskInput })
+        body: JSON.stringify({ 
+            taskName: taskInput,
+            taskPriority: taskPriority 
+        })
     });
 
     const data = await response.json();

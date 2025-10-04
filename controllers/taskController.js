@@ -22,6 +22,7 @@ export async function getAllTasks(req, res) {
             id: task.id,
             task_name: task.task_name,
             created_at: task.created_at,
+            priority: task.priority,
             formattedDate: task.formattedDate
         }
     });
@@ -37,12 +38,12 @@ export async function getAllTasks(req, res) {
 
 // Add task
 export async function addTask(req, res) {
-    const task = req.body.taskName;
+    const task = req.body;
 
     // Insert task into SupaBase tasks table
     const {data, error, status} = await supabase
         .from(`${TABLES.TASKS}`)
-        .insert({ task_name: task })
+        .insert({ task_name: task.taskName, priority: task.taskPriority })
         .select();
 
     if (error) {
@@ -58,6 +59,7 @@ export async function addTask(req, res) {
         id: taskObject.id,
         task_name: taskObject.task_name,
         created_at: taskObject.created_at,
+        priority: taskObject.priority,
         formattedDate: taskObject.formattedDate
     };
 
@@ -97,6 +99,7 @@ export async function deleteTask(req, res) {
         id: taskObject.id,
         task_name: taskObject.task_name,
         created_at: taskObject.created_at,
+        priority: taskObject.priority,
         formattedDate: taskObject.formattedDate
     };
 
